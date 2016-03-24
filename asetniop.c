@@ -38,9 +38,9 @@
 
 //128 64 32 16  8 4 2 1
 uint8_t modifier_keys[4] =
-    {KEY_CTRL,KEY_SHIFT,KEY_ALT,KEY_GUI};
+    {KEY_CTRL,       KEY_SHIFT,       KEY_ALT,       KEY_GUI,       };
 uint8_t modifier_key_numbers[4] =
-    {128+64+32+16+1,128+64+32+16+2,128+64+32+16+4,128+64+32+16+8,};
+    {128+64+32+16+1, 128+64+32+16+2, 128+64+32+16+4, 128+64+32+16+8,};
 uint8_t modifier_key_state = 0;
 
 uint8_t key_map[1024] =
@@ -80,7 +80,7 @@ uint16_t idle_count=0;
 
 int main(void)
 {
-	uint8_t d, mask, i, reset_idle, key_state, last_key_state=0, modifier_pressed=0;
+	uint8_t d, mask, i, reset_idle, key_state, last_key_state=0, modifier_pressed=0,timer=0,timeout=1500;
 	uint8_t d_prev=0xFF;
     uint8_t pressed_keys[8]={0,0,0,0,0,0,0,0};
 
@@ -132,8 +132,13 @@ int main(void)
             }
 		}
 
+        if (key_state != 0 ) {
+            timer++;
+        }
+
         //phex(modifier_key_state);
-        if ((key_state == 0) && (last_key_state != 0)) {
+        if (((key_state == 0) && (last_key_state != 0)) || timer == timeout ) {
+            timer=0;
             mask = 1;
             for (i=0; i<4; i++) {
                 if (modifier_key_numbers[i] == last_key_state) {
@@ -154,6 +159,7 @@ int main(void)
         if (key_state > last_key_state) {
             last_key_state = key_state;
         }
+
         //phex(pressed_key_value);
         //print("\n");
 		// if any keypresses were detected, reset the idle counter
