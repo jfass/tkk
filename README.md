@@ -10,4 +10,6 @@ Don't forget the [bootloader](https://github.com/PaulStoffregen/teensy_loader_cl
     sudo ./teensy_loader_cli/teensy_loader_cli --mcu=atmega32u4 asetniop.hex -w
 Or something.
 
+You can watch a short typing demo [here](https://youtu.be/0AZoeCmnyow).
+
 ![Imgur](http://i.imgur.com/Y9XzgFe.jpg)
