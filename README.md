@@ -4,7 +4,7 @@ This is my chorded keyboard project. If you don't already know, a chorded keyboa
 
 ![Imgur](http://i.imgur.com/ffweqWb.jpg)
 
-It works pretty good for such the hacky experiment it is, and is rather comfortable to type on. I'm still not up to my qwerty typing speed, but it took me a long time to develop that, so I'm estimating that the time to develop typing speed on qwerty vs asetniop are about the same. Asetniop may have the difference that it will force you to touch type right away, which could be seen as good or bad.
+It works pretty good for the hacky experiment it is, and is rather comfortable to type on. I'm still not up to my qwerty typing speed, but it took me a long time to develop that, so I'm estimating that the time to develop typing speed on qwerty vs asetniop are about the same. Asetniop may have the difference that it will force you to touch type right away, which could be seen as good or bad.
 
 You can watch a short typing demo [here](https://youtu.be/0AZoeCmnyow).
 
