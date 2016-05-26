@@ -1,15 +1,83 @@
 # asetniop-keyboard
 
+This is my chorded keyboard project. If you don't already know, a chorded keyboard is a keyboard that makes use of combonations of keys pressed at the same time (a chords) rather than individual keypresses for typing. (It could be said that qwerty is chorded: Using chords like 'shift'+'A' for a capital 'A' or 'ctrl'+'V' for commonly found paste functions, but this misses the heart of the thing.)
+
+It works pretty good for such the hacky experiment it is, and is rather comfortable to type on. I'm still not up to my qwerty typing speed, but it took me a long time to develop that, so I'm estimating that the time to develop typing speed on qwerty vs asetniop are about the same. Asetniop may have the difference that it will force you to touch type right away, which could be seen as good or bad.
+
+You can watch a short typing demo [here](https://youtu.be/0AZoeCmnyow).
+
 ![Imgur](http://i.imgur.com/ffweqWb.jpg)
 
-Chorded keyboard based on [asetniop](http://asetniop.com/) and [teensy](http://www.pjrc.com/teensy/usb_keyboard.html).
+Inspired by [asetniop](http://asetniop.com/) and built using [teensy](http://www.pjrc.com/teensy/usb_keyboard.html).
 
-Some modifications / expansions have been made to the asetniop spec. I'll hopefully get around to documenting this a bit better.
+## Installation
+Keys are wired up directly to the pins D0 - D7. You could wire them up and flash the code to your teensy and then mess around till you figure out what key is what, or bother me and I'll write you a better guide.
 
 Don't forget the [bootloader](https://github.com/PaulStoffregen/teensy_loader_cli)
     sudo ./teensy_loader_cli/teensy_loader_cli --mcu=atmega32u4 asetniop.hex -w
 Or something.
 
-You can watch a short typing demo [here](https://youtu.be/0AZoeCmnyow).
-
 ![Imgur](http://i.imgur.com/Y9XzgFe.jpg)
+
+## Typing guide
+
+If you want to start learning about typing with this style of chorded keyboard, you can use the asetniop [keyboard tutorial](http://asetniop.com/keyboardTutorial.html) and [keyboard racer](http://asetniop.com/keyboardRacer.html) to start learning asetniop in your web browser using your qwerty keyboard. This way you can find out what its like to type with a chorded keyboard without needing to do anything radical like building a keyboard.
+
+There are a number of additions to the asetniop chords to expand this project into a more general keyboard. Also my keyboard only has eight keys, so doesn't use the thumbs at all. I'll explain below.
+
+For the perpose of this guide I'm representing chords with a series of '.'s and '#'s. The '#'s represent a key being pressed down, and the '.'s a key left unpressed. Read from left to right the keys represented are the left pinky key through to the right pinky key.
+
+### Numbers
+The numbers all use .### on the left as somewhat of a prefix, and then follows a binary sequence from 0 to 9.
+
+    .### .... : 0
+    .### ...# : 1
+    .### ..#. : 2
+    .### ..## : 3
+    .### .#.. : 4
+    .### .#.# : 5
+    .### .##. : 6
+    .### .### : 7
+    .### #... : 8
+    .### #..# : 9
+
+### Arrow keys
+Like with the numbers the arrow keys use a 'prefix'. They all start with the 'w' key; ##..
+
+    ##.. ...# : up
+    ##.. ..## : down
+    ##.. ..#. : left
+    ##.. .#.. : right
+
+### Non-alphanumeric
+The non-alphanumeric keys were some of the first I wanted for interacting with my computer. The way the 'ctrl', 'shift', 'alt', and 'mod/window' keys work is that you press the chord, and then it is applied to the next chord that is pressed. For example, to get a '?' you would press #### ..#. and then press #... ...#
+
+    #### ...# : ctrl
+    #### ..#. : shift
+    #### .#.. : alt
+    #### #... : mod/window
+    .... #### : space
+    ...# #### : enter
+    ###. .... : tab
+    #### .... : esc
+
+The rest of the keys may be a bit confusing, because I didn't add chords for anything that would normally be accessed by pressing shift+'some key'. So for example to use a '!' you need to press the chord for shift followed by the key for 1. because of this it's important to remember where all the symbols are on the qwerty keyboard. (assuming you want to use them.)
+
+Of the rest of the keys, some of them may be in the original asetniop, and others I may have added or changed. I don't really remember which is which, sorry.
+
+    .... ##.# : [
+    .... #.## : ]
+    #... ...# : /
+    #... ..#. : \
+    #... #### : `
+    ..#. ..#. : -
+    ..#. ..## : =
+    
+## Looking forward
+
+The next thing on my todo list with this project is adding functionality for seperating chords when the typist accidentally starts a second chord before fully releasing the first.
+
+I'd like to add the rest of the keys on a standard keyboard, and maybe some special function keys, but I'm not sure when I'll get around to it.
+
+Further down the line I would like to experiment with adding joystick / mouse functionality, and building a wireless pair.
+
