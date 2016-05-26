@@ -2,13 +2,15 @@
 
 This is my chorded keyboard project. If you don't already know, a chorded keyboard is a keyboard that makes use of combonations of keys pressed at the same time (a chords) rather than individual keypresses for typing. (It could be said that qwerty is chorded: Using chords like 'shift'+'A' for a capital 'A' or 'ctrl'+'V' for commonly found paste functions, but this misses the heart of the thing.)
 
+![Imgur](http://i.imgur.com/ffweqWb.jpg)
+
 It works pretty good for such the hacky experiment it is, and is rather comfortable to type on. I'm still not up to my qwerty typing speed, but it took me a long time to develop that, so I'm estimating that the time to develop typing speed on qwerty vs asetniop are about the same. Asetniop may have the difference that it will force you to touch type right away, which could be seen as good or bad.
 
 You can watch a short typing demo [here](https://youtu.be/0AZoeCmnyow).
 
-![Imgur](http://i.imgur.com/ffweqWb.jpg)
-
 Inspired by [asetniop](http://asetniop.com/) and built using [teensy](http://www.pjrc.com/teensy/usb_keyboard.html).
+
+![Imgur](http://i.imgur.com/Y9XzgFe.jpg)
 
 ## Installation
 Keys are wired up directly to the pins D0 - D7. You could wire them up and flash the code to your teensy and then mess around till you figure out what key is what, or bother me and I'll write you a better guide.
@@ -16,8 +18,6 @@ Keys are wired up directly to the pins D0 - D7. You could wire them up and flash
 Don't forget the [bootloader](https://github.com/PaulStoffregen/teensy_loader_cli)
     sudo ./teensy_loader_cli/teensy_loader_cli --mcu=atmega32u4 asetniop.hex -w
 Or something.
-
-![Imgur](http://i.imgur.com/Y9XzgFe.jpg)
 
 ## Typing guide
 
