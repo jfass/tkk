@@ -1,6 +1,6 @@
 # asetniop-keyboard
 
-This is my chorded keyboard project. If you don't already know, a chorded keyboard is a keyboard that makes use of combonations of keys pressed at the same time (a chords) rather than individual keypresses for typing. (It could be said that qwerty is chorded: Using chords like 'shift'+'A' for a capital 'A' or 'ctrl'+'V' for commonly found paste functions, but this misses the heart of the thing.)
+This is my chorded keyboard project. If you don't already know, a chorded keyboard is a keyboard that makes use of combinations of keys pressed at the same time (a chords) rather than individual keypresses for typing. (It could be said that qwerty is chorded: Using chords like 'shift'+'A' for a capital 'A' or 'ctrl'+'V' for commonly found paste functions, but this misses the heart of the thing.)
 
 ![Imgur](http://i.imgur.com/ffweqWb.jpg)
 
@@ -61,7 +61,7 @@ The non-alphanumeric keys were some of the first I wanted for interacting with m
     ###. .... : tab
     #### .... : esc
 
-The rest of the keys may be a bit confusing, because I didn't add chords for anything that would normally be accessed by pressing shift+'some key'. So for example to use a '!' you need to press the chord for shift followed by the key for 1. because of this it's important to remember where all the symbols are on the qwerty keyboard. (assuming you want to use them.)
+The rest of the keys may be a bit confusing, because I didn't add chords for anything that would normally be accessed by pressing shift+'some key'. So, for example, to use a '!' you need to press the chord for shift followed by the key for 1. because of this it's important to remember where all the symbols are on the qwerty keyboard. (assuming you want to use them.)
 
 Of the rest of the keys, some of them may be in the original asetniop, and others I may have added or changed. I don't really remember which is which, sorry.
 
