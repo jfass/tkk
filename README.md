@@ -81,3 +81,5 @@ I'd like to add the rest of the keys on a standard keyboard, and maybe some spec
 
 Further down the line I would like to experiment with adding joystick / mouse functionality, and building a wireless pair.
 
+Or abandoning this and making a pair that maps the fingers onto a ternary, rather than binary, system. You know, for the 3 positions ^ 10 fingers = 59049 chords, rather than the 2 positions ^ 8 fingers = 256 chords availiable on my current system. If I assume 12 axes because the thumbs move in two axes so nicely that gives me: 3 positions ^ 12 axes = 531441. That's 3 positions ^ 6 axes = 729 chords on one hand! The trouble then would never be space, but figuring out how to organise all the chords. Ok, it would probably still be space at some point, because who wants to be stuck with a vocabulary of just over half a million. So lame right?
+
