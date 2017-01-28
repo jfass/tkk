@@ -13,11 +13,23 @@ Inspired by [asetniop](http://asetniop.com/) and built using [teensy](http://www
 ![Imgur](http://i.imgur.com/Y9XzgFe.jpg)
 
 ## Installation
-Keys are wired up directly to the pins D0 - D7. You could wire them up and flash the code to your teensy and then mess around till you figure out what key is what, or bother me and I'll write you a better guide.
+Keys are wired up directly to the pins D0 - D7. There are ways to do this that would save pins, but I like this method because it's easy, and I don't need the extra pins for anything.
 
-Don't forget the [bootloader](https://github.com/PaulStoffregen/teensy_loader_cli)
+![Imgur](http://i.imgur.com/u2KrHGw.png)
+
+If you're on linux like me you may want to use the [bootloader](https://github.com/PaulStoffregen/teensy_loader_cli)
+
     sudo ./teensy_loader_cli/teensy_loader_cli --mcu=atmega32u4 asetniop.hex -w
-Or something.
+
+Otherwise you'll have to flash the firmware some other way. Message me if you don't know how and I'll try to help you out.
+
+## Bill of materials
+
+ - [A teensyduino 2.0 board.](https://www.pjrc.com/store/teensy.html)
+ - [8 Keyswitches](https://mechanicalkeyboards.com/shop/index.php?l=product_detail&p=708)
+ - [8 Keycaps](http://www.wasdkeyboards.com/index.php/products/blank-keycap-singles/row-2-size-1x1-cherry-mx-keycap.html) (if you're not printing them)
+ - wire and solder tools.
+ - M3 nuts and bolts for the case.
 
 ## Typing guide
 
@@ -73,7 +85,7 @@ Of the rest of the keys, some of them may be in the original asetniop, and other
     ..#. ..#. : -
     ..#. ..## : =
     
-## Looking forward
+## Random nonsense
 
 The next thing on my todo list with this project is adding functionality for seperating chords when the typist accidentally starts a second chord before fully releasing the first.
 
