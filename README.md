@@ -26,6 +26,7 @@ Otherwise you'll have to flash the firmware some other way. Message me if you do
 ## Bill of materials
 
  - [A teensyduino 2.0 board.](https://www.pjrc.com/store/teensy.html)
+ - A 3D printed copy of each of the [.stl files.](https://github.com/TristanTrim/asetniop-keyboard/tree/master/printed_parts)
  - [8 Keyswitches](https://mechanicalkeyboards.com/shop/index.php?l=product_detail&p=708)
  - [8 Keycaps](http://www.wasdkeyboards.com/index.php/products/blank-keycap-singles/row-2-size-1x1-cherry-mx-keycap.html) (if you're not printing them)
  - wire and solder tools.
