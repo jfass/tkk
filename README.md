@@ -38,7 +38,7 @@ If you want to start learning about typing with this style of chorded keyboard, 
 
 There are a number of additions to the asetniop chords to expand this project into a more general keyboard. Also my keyboard only has eight keys, so doesn't use the thumbs at all. I'll explain below.
 
-For the perpose of this guide I'm representing chords with a series of '.'s and '#'s. The '#'s represent a key being pressed down, and the '.'s a key left unpressed. Read from left to right the keys represented are the left pinky key through to the right pinky key.
+For the purpose of this guide I'm representing chords with a series of '.'s and '#'s. The '#'s represent a key being pressed down, and the '.'s a key left unpressed. Read from left to right the keys represented are the left pinky key through to the right pinky key.
 
 ### Numbers
 The numbers all use .### on the left as somewhat of a prefix, and then follows a binary sequence from 0 to 9.
