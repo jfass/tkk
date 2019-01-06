@@ -44,43 +44,59 @@ uint8_t modifier_key_numbers[4] =
 uint8_t modifier_key_state = 0;
 
 uint8_t key_map[1024] =
-    {0,KEY_P,KEY_O,KEY_SEMICOLON,KEY_I,KEY_K,KEY_L,0,
+      {0,KEY_P,KEY_O,KEY_SEMICOLON,KEY_I,KEY_K,KEY_L,0,
        KEY_N,KEY_M,KEY_U,KEY_RIGHT_BRACE,KEY_H,KEY_LEFT_BRACE,0,KEY_SPACE,
+
        KEY_T,KEY_BACKSPACE,KEY_G,0,KEY_V,0,0,0,
        KEY_B,0,0,0,0,0,0,KEY_ENTER,
+
        KEY_E,KEY_QUOTE,KEY_MINUS,KEY_EQUAL,KEY_COMMA,0,0,0,
        KEY_Y,0,0,0,0,0,0,0,
+
        KEY_R,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
-       KEY_S,0,KEY_PERIOD,0,KEY_Z,0,0,0,
+
+       KEY_S,KEY_SPACE,KEY_PERIOD,0,KEY_Z,0,0,0,
        KEY_J,0,0,0,0,0,0,0,
+
        KEY_C,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        KEY_D,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        KEY_0,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6,KEY_7,
        KEY_8,KEY_9,0,0,0,0,0,0,
+
        KEY_A,KEY_SLASH,KEY_BACKSLASH,0,0,0,0,0,
        KEY_Q,0,0,0,0,0,0,KEY_TILDE,
+
        KEY_F,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        KEY_X,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        0,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        KEY_W,KEY_UP,KEY_LEFT,KEY_DOWN,KEY_RIGHT,0,0,0,
        0,0,0,0,0,0,0,0,
+
        0,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        KEY_TAB,0,0,0,0,0,0,0,
        0,0,0,0,0,0,0,0,
+
        KEY_ESC,0,0,0,0,0,0,0,
+       0,0,0,0,0,0,0,0,
        };
 uint16_t idle_count=0;
 
 int main(void)
 {
-	uint8_t d, mask, i, reset_idle, key_state, last_key_state=0, modifier_pressed=0,timer=0,timeout=1500;
+	uint8_t d, mask, i, reset_idle, key_state, last_key_state=0, modifier_pressed=0,timer=0,timeout=1500,timebetween=100;
 	uint8_t d_prev=0xFF;
     uint8_t pressed_keys[8]={0,0,0,0,0,0,0,0};
 
@@ -103,13 +119,6 @@ int main(void)
 	// and do whatever it does to actually be ready for input
 	_delay_ms(1000);
 
-	// Configure timer 0 to generate a timer overflow interrupt every
-	// 256*1024 clock cycles, or approx 61 Hz when using 16 MHz clock
-	// This demonstrates how to use interrupts to implement a simple
-	// inactivity timeout.
-	TCCR0A = 0x00;
-	TCCR0B = 0x05;
-	TIMSK0 = (1<<TOIE0);
 
 	while (1) {
 		// read all port D pins
@@ -138,7 +147,7 @@ int main(void)
 
         //phex(modifier_key_state);
         if (((key_state == 0) && (last_key_state != 0)) || timer == timeout ) {
-            timer=0;
+            timer=timeout-timebetween;
             mask = 1;
             for (i=0; i<4; i++) {
                 if (modifier_key_numbers[i] == last_key_state) {
@@ -179,16 +188,5 @@ int main(void)
 	}
 }
 
-// This interrupt routine is run approx 61 times per second.
-// A very simple inactivity timeout is implemented, where we
-// will (not send a space character) and print a message to the
-// hid_listen debug message window.
-ISR(TIMER0_OVF_vect)
-{
-	idle_count++;
-	if (idle_count > 61 * 8) {
-		idle_count = 0;
-	}
-}
 
 
