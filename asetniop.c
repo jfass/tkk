@@ -31,162 +31,221 @@
 #include <util/delay.h>
 #include "usb_keyboard.h"
 
-#define LED_CONFIG	(DDRD |= (1<<6))
-#define LED_ON		(PORTD &= ~(1<<6))
-#define LED_OFF		(PORTD |= (1<<6))
-#define CPU_PRESCALE(n)	(CLKPR = 0x80, CLKPR = (n))
+#define LED_CONFIG  (DDRD |= (1<<6))
+#define LED_ON    (PORTD &= ~(1<<6))
+#define LED_OFF    (PORTD |= (1<<6))
+#define CPU_PRESCALE(n)  (CLKPR = 0x80, CLKPR = (n))
+
+
+void zero(void);
+void arrow(void);
+void page(void);
+void normal(void);
+void empty(void);
+
 
 //128 64 32 16  8 4 2 1
 uint8_t modifier_keys[4] =
     {KEY_CTRL,       KEY_SHIFT,       KEY_ALT,       KEY_GUI,       };
 uint8_t modifier_key_numbers[4] =
     {128+64+32+16+1, 128+64+32+16+2, 128+64+32+16+4, 128+64+32+16+8,};
-uint8_t modifier_key_state = 0;
+uint8_t modifier_chord_id = 0;
 
-uint8_t key_map[1024] =
-      {0,KEY_P,KEY_O,KEY_SEMICOLON,KEY_I,KEY_K,KEY_L,0,
-       KEY_N,KEY_M,KEY_U,KEY_RIGHT_BRACE,KEY_H,KEY_LEFT_BRACE,0,KEY_SPACE,
+// So I'm trying to make this array of chords kinda readable
+// It's broken up into sixteen sections, each one has a set of all the
+// chords formed with the same pattern on the left hand, and goes through
+// the binary sequency of patterns for the right hand.
+// That is to say, for each set the chord pattern goes like:
+//    xx xx  .. .. ,  xx xx  .. .# ,  xx xx  .. #. ,  xx xx  .. ## ,
+//    xx xx  .# .. ,  xx xx  .# .# ,  xx xx  .# #. ,  xx xx  .# ##  ,
+//    xx xx  #. .. ,  xx xx  #. .# ,  xx xx  #. #. ,  xx xx  #. ## ,
+//    xx xx  ## .. ,  xx xx  ## .# ,  xx xx  ## #. ,  xx xx  ## ##  ,
+// Each entry consists of a function for how that chord should
+// be interpreted, and a chord value that represents what that
+// chord should send as a key to the computer.
+// Like:    [function, value]
+// So for example, the chord '.. ..  .# .#' represents the letter 'k'
+// when that key is pressed, it is interpretted as a regular keypress
+// so it gets the function 'normal' shorthanded to 'n'.
+// Like:    [n,KEY_K        ] 
+// All the empty space is to maintain a nice readable grid.
 
-       KEY_T,KEY_BACKSPACE,KEY_G,0,KEY_V,0,0,0,
-       KEY_B,0,0,0,0,0,0,KEY_ENTER,
+void (*z)(void) = zero;
+void (*a)(void) = arrow;
+void (*p)(void) = page;
+void (*n)(void) = normal;
+void (*e)(void) = empty;
 
-       KEY_E,KEY_QUOTE,KEY_MINUS,KEY_EQUAL,KEY_COMMA,0,0,0,
-       KEY_Y,0,0,0,0,0,0,0,
 
-       KEY_R,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_S,KEY_SPACE,KEY_PERIOD,0,KEY_Z,0,0,0,
-       KEY_J,0,0,0,0,0,0,0,
-
-       KEY_C,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_D,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_0,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6,KEY_7,
-       KEY_8,KEY_9,0,0,0,0,0,0,
-
-       KEY_A,KEY_SLASH,KEY_BACKSLASH,0,0,0,0,0,
-       KEY_Q,0,0,0,0,0,0,KEY_TILDE,
-
-       KEY_F,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_X,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       0,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_W,KEY_UP,KEY_LEFT,KEY_DOWN,KEY_RIGHT,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       0,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_TAB,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
-
-       KEY_ESC,0,0,0,0,0,0,0,
-       0,0,0,0,0,0,0,0,
+uint8_t key_map[1024] = {
+// .. ..
+    [z,0            ],[n,KEY_P        ],[n,KEY_O        ],[n,KEY_SEMICOLON],
+    [n,KEY_I        ],[n,KEY_K        ],[n,KEY_L        ],[e,0            ],
+    [n,KEY_N        ],[n,KEY_M        ],[n,KEY_U        ],[n,KEY_RIGHT_BRACE],
+    [n,KEY_H        ],[n,KEY_LEFT_BRACE],[e,0           ],[n,KEY_SPACE    ],
+// .. .#
+    [n,KEY_T        ],[n,KEY_BACKSPACE],[n,KEY_G        ],[e,0            ],
+    [n,KEY_V        ],[e,0            ],[e,0            ],[e,0            ],
+    [n,KEY_B        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[n,KEY_ENTER    ],
+// .. #.
+    [n,KEY_E        ],[n,KEY_QUOTE    ],[n,KEY_MINUS    ],[n,KEY_EQUAL    ],
+    [n,KEY_COMMA    ],[e,0            ],[e,0            ],[e,0            ],
+    [n,KEY_Y        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// .. ##
+    [n,KEY_R        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// .# ..
+    [n,KEY_S        ],[n,KEY_SPACE    ],[n,KEY_PERIOD   ],[e,0            ],
+    [n,KEY_Z        ],[e,0            ],[e,0            ],[e,0            ],
+    [n,KEY_J        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// .# .#
+    [n,KEY_C        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// .# #.
+    [n,KEY_D        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// .# ##
+    [n,KEY_0        ],[n,KEY_1        ],[n,KEY_2        ],[n,KEY_3        ],
+    [n,KEY_4        ],[n,KEY_5        ],[n,KEY_6        ],[n,KEY_7        ],
+    [n,KEY_8        ],[n,KEY_9        ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// #. ..
+    [n,KEY_A        ],[n,KEY_SLASH    ],[n,KEY_BACKSLASH],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [n,KEY_Q        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[n,KEY_TILDE    ],
+// #. .#
+    [n,KEY_F        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// #. #.
+    [n,KEY_X        ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// #. ##
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// ## ..
+    [n,KEY_W        ],[n,KEY_UP       ],[n,KEY_LEFT     ],[n,KEY_DOWN     ],
+    [n,KEY_RIGHT    ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// ## .#
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// ## #.
+    [n,KEY_TAB      ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+// ## ##
+    [n,KEY_ESC      ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    [e,0            ],[e,0            ],[e,0            ],[e,0            ]
        };
 uint16_t idle_count=0;
 
+void read(void);
+void keydown(void);
+void keyup(void);
+void keysend(void);
+
+void dump_fifo(void);
+void realtime(void);
+void keyhold(void);
+
+uint8_t d, d_prev, mask, i, chord_id, last_chord_id=0, modifier_pressed=0,timer=0,timeout=1500,timebetween=100;
+uint8_t chord_keys[8]={0,0,0,0,0,0,0,0};
+
 int main(void)
 {
-	uint8_t d, mask, i, reset_idle, key_state, last_key_state=0, modifier_pressed=0,timer=0,timeout=1500,timebetween=100;
-	uint8_t d_prev=0xFF;
-    uint8_t pressed_keys[8]={0,0,0,0,0,0,0,0};
+  // Stuff from the original keyboard code for, like, being a keyboard and stuff.
 
-	// set for 16 MHz clock
-	CPU_PRESCALE(0);
+  // set for 16 MHz clock
+  CPU_PRESCALE(0);
 
-	// Configure all port B and port D pins as inputs with pullup resistors.
-	// See the "Using I/O Pins" page for details.
-	// http://www.pjrc.com/teensy/pins.html
-	DDRD = 0x00;
-	PORTD = 0xFF;
+  // Configure all port B and port D pins as inputs with pullup resistors.
+  // See the "Using I/O Pins" page for details.
+  // http://www.pjrc.com/teensy/pins.html
+  DDRD = 0x00;
+  PORTD = 0xFF;
 
-	// Initialize the USB, and then wait for the host to set configuration.
-	// If the Teensy is powered without a PC connected to the USB port,
-	// this will wait forever.
-	usb_init();
-	while (!usb_configured()) /* wait */ ;
+  // Initialize the USB, and then wait for the host to set configuration.
+  // If the Teensy is powered without a PC connected to the USB port,
+  // this will wait forever.
+  usb_init();
+  while (!usb_configured()) /* wait */ ;
 
-	// Wait an extra second for the PC's operating system to load drivers
-	// and do whatever it does to actually be ready for input
-	_delay_ms(1000);
+  // Wait an extra second for the PC's operating system to load drivers
+  // and do whatever it does to actually be ready for input
+  _delay_ms(1000);
 
 
-	while (1) {
-		// read all port D pins
-		d = PIND;
-		// check if any pins are low, but were high previously
-		mask = 1;
-		reset_idle = 0;
-		for (i=0; i<8; i++) {
-			if ((d & mask) == 0)  { // && (d_prev & mask) != 0) {
-                pressed_keys[i] = 1;
-				reset_idle = 1;
-            }
-			mask = mask << 1;
-		}
-        key_state = 0;
-		for (i=0; i<8; i++) {
-            if (pressed_keys[i]) {
-                key_state += 1 << i;
-                pressed_keys[i] = 0;
-            }
-		}
+  // And now for the main event!
 
-        if (key_state != 0 ) {
+  while (1) {
+    read();
+
+    if (chord_id != 0 )
             timer++;
-        }
 
-        //phex(modifier_key_state);
-        if (((key_state == 0) && (last_key_state != 0)) || timer == timeout ) {
-            timer=timeout-timebetween;
-            mask = 1;
-            for (i=0; i<4; i++) {
-                if (modifier_key_numbers[i] == last_key_state) {
-                    modifier_pressed = 1;
-                    if ((modifier_key_state & mask) == 0 ) {
-                        modifier_key_state += 1<<i;
-                    }
+    if (((chord_id == 0) && (last_chord_id != 0)) || timer == timeout ) {
+        timer=timeout-timebetween;
+        mask = 1;
+        for (i=0; i<4; i++) {
+            if (modifier_key_numbers[i] == last_chord_id) {
+                modifier_pressed = 1;
+                if ((modifier_chord_id & mask) == 0 ) {
+                    modifier_chord_id += 1<<i;
                 }
-                mask = mask << 1;
             }
-            if (modifier_pressed == 0) {
-                usb_keyboard_press(key_map[last_key_state],modifier_key_state);
-                modifier_key_state = 0;
-            }
-            last_key_state = 0;
-            modifier_pressed = 0;
+            mask = mask << 1;
         }
-        if (key_state > last_key_state) {
-            last_key_state = key_state;
+        if (modifier_pressed == 0) {
+            usb_keyboard_press(key_map[last_chord_id][1],modifier_chord_id);
+            modifier_chord_id = 0;
         }
+        last_chord_id = 0;
+        modifier_pressed = 0;
+    }
+    if (chord_id > last_chord_id) {
+        last_chord_id = chord_id;
+    }
 
-        //phex(pressed_key_value);
-        //print("\n");
-		// if any keypresses were detected, reset the idle counter
-		if (reset_idle) {
-			// variables shared with interrupt routines must be
-			// accessed carefully so the interrupt routine doesn't
-			// try to use the variable in the middle of our access
-			cli();
-			idle_count = 0;
-			sei();
-		}
-		// now the current pins will be the previous, and
-		// wait a short delay so we're not highly sensitive
-		// to mechanical "bounce".
-		d_prev = d;
-		_delay_ms(2);
-	}
+    // now the current pins will be the previous, and
+    // wait a short delay so we're not highly sensitive
+    // to mechanical "bounce".
+    d_prev = d;
+    _delay_ms(2);
+  }
 }
 
 
-
+void read(void){
+  // read all port D pins
+  d = PIND;
+  chord_id = ~d;
+  mask = 1;// sweepy sweepy sweep my byte!
+  for (i=0; i<8; i++) {
+    if ((d & mask) == 0)  { // && (d_prev & mask) != 0) {
+              chord_keys[i] = 1;
+          }
+    mask = mask << 1;
+  }
+}
