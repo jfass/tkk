@@ -70,94 +70,94 @@ uint8_t modifier_chord_id = 0;
 // Like:    [n,KEY_K        ] 
 // All the empty space is to maintain a nice readable grid.
 
-void (*z)(void) = zero;
-void (*a)(void) = arrow;
-void (*p)(void) = page;
-void (*n)(void) = normal;
-void (*e)(void) = empty;
-
-
-uint8_t key_map[1024] = {
+typedef void (*func)(void);
+func functions[5] = {zero, empty, normal, arrow, page};
+#define              z 0
+#define                    e 1
+#define                           n 2
+#define                                   a 3
+#define                                          p 4
+uint8_t key_map[1024][2] = {
 // .. ..
-    [z,0            ],[n,KEY_P        ],[n,KEY_O        ],[n,KEY_SEMICOLON],
-    [n,KEY_I        ],[n,KEY_K        ],[n,KEY_L        ],[e,0            ],
-    [n,KEY_N        ],[n,KEY_M        ],[n,KEY_U        ],[n,KEY_RIGHT_BRACE],
-    [n,KEY_H        ],[n,KEY_LEFT_BRACE],[e,0           ],[n,KEY_SPACE    ],
+    {z,0            },{n,KEY_P        },{n,KEY_O        },{n,KEY_SEMICOLON},
+    {n,KEY_I        },{n,KEY_K        },{n,KEY_L        },{e,0            },
+    {n,KEY_N        },{n,KEY_M        },{n,KEY_U        },{n,KEY_RIGHT_BRACE},
+    {n,KEY_H        },{n,KEY_LEFT_BRACE},{e,0           },{n,KEY_SPACE    },
 // .. .#
-    [n,KEY_T        ],[n,KEY_BACKSPACE],[n,KEY_G        ],[e,0            ],
-    [n,KEY_V        ],[e,0            ],[e,0            ],[e,0            ],
-    [n,KEY_B        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[n,KEY_ENTER    ],
+    {n,KEY_T        },{n,KEY_BACKSPACE},{n,KEY_G        },{e,0            },
+    {n,KEY_V        },{e,0            },{e,0            },{e,0            },
+    {n,KEY_B        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{n,KEY_ENTER    },
 // .. #.
-    [n,KEY_E        ],[n,KEY_QUOTE    ],[n,KEY_MINUS    ],[n,KEY_EQUAL    ],
-    [n,KEY_COMMA    ],[e,0            ],[e,0            ],[e,0            ],
-    [n,KEY_Y        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_E        },{n,KEY_QUOTE    },{n,KEY_MINUS    },{n,KEY_EQUAL    },
+    {n,KEY_COMMA    },{e,0            },{e,0            },{e,0            },
+    {n,KEY_Y        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // .. ##
-    [n,KEY_R        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_R        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // .# ..
-    [n,KEY_S        ],[n,KEY_SPACE    ],[n,KEY_PERIOD   ],[e,0            ],
-    [n,KEY_Z        ],[e,0            ],[e,0            ],[e,0            ],
-    [n,KEY_J        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_S        },{n,KEY_SPACE    },{n,KEY_PERIOD   },{e,0            },
+    {n,KEY_Z        },{e,0            },{e,0            },{e,0            },
+    {n,KEY_J        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // .# .#
-    [n,KEY_C        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_C        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // .# #.
-    [n,KEY_D        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_D        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // .# ##
-    [n,KEY_0        ],[n,KEY_1        ],[n,KEY_2        ],[n,KEY_3        ],
-    [n,KEY_4        ],[n,KEY_5        ],[n,KEY_6        ],[n,KEY_7        ],
-    [n,KEY_8        ],[n,KEY_9        ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_0        },{n,KEY_1        },{n,KEY_2        },{n,KEY_3        },
+    {n,KEY_4        },{n,KEY_5        },{n,KEY_6        },{n,KEY_7        },
+    {n,KEY_8        },{n,KEY_9        },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // #. ..
-    [n,KEY_A        ],[n,KEY_SLASH    ],[n,KEY_BACKSLASH],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [n,KEY_Q        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[n,KEY_TILDE    ],
+    {n,KEY_A        },{n,KEY_SLASH    },{n,KEY_BACKSLASH},{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {n,KEY_Q        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{n,KEY_TILDE    },
 // #. .#
-    [n,KEY_F        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_F        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // #. #.
-    [n,KEY_X        ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_X        },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // #. ##
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // ## ..
-    [n,KEY_W        ],[n,KEY_UP       ],[n,KEY_LEFT     ],[n,KEY_DOWN     ],
-    [n,KEY_RIGHT    ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_W        },{n,KEY_UP       },{n,KEY_LEFT     },{n,KEY_DOWN     },
+    {n,KEY_RIGHT    },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // ## .#
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // ## #.
-    [n,KEY_TAB      ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
+    {n,KEY_TAB      },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
 // ## ##
-    [n,KEY_ESC      ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ],
-    [e,0            ],[e,0            ],[e,0            ],[e,0            ]
+    {n,KEY_ESC      },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            },
+    {e,0            },{e,0            },{e,0            },{e,0            }
        };
 uint16_t idle_count=0;
 
@@ -248,4 +248,16 @@ void read(void){
           }
     mask = mask << 1;
   }
+}
+
+
+void zero(void){
+}
+void empty(void){
+}
+void normal(void){
+}
+void arrow(void){
+}
+void page(void){
 }
