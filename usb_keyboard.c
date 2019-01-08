@@ -34,7 +34,7 @@
  **************************************************************************/
 
 // You can change these to give your code its own name.
-#define STR_MANUFACTURER	L"MfgName"
+#define STR_MANUFACTURER	L"TT"
 #define STR_PRODUCT		L"Keyboard"
 
 
