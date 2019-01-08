@@ -134,7 +134,7 @@ uint8_t key_map[256][2] = {
     {e,0            },{e,0            },{e,0            },{e,0            },    // 156   157   158   159
 // #. #.    160
     {n,KEY_X        },{e,0            },{e,0            },{e,0            },    // 160   161   162   163
-    {e,0            },{e,0            },{e,0            },{e,0            },    // 164   165   166   167
+    {e,0            },{n, 0           },{e,0            },{e,0            },    // 164   165   166   167
     {e,0            },{e,0            },{e,0            },{e,0            },    // 168   169   170   171
     {e,0            },{e,0            },{e,0            },{e,0            },    // 172   173   174   175
 // #. ##    176
@@ -157,7 +157,7 @@ uint8_t key_map[256][2] = {
     {p,KEY_PAGE_DOWN},{e,0            },{e,0            },{e,0            },    // 228   229   230   231
     {p,KEY_HOME     },{e,0            },{e,0            },{e,0            },    // 232   233   234   235
     {e,0            },{e,0            },{e,0            },{e,0            },    // 236   237   238   239
-// ## ##     240  These are mostly all modifier keys. They are handled elsewhere, but still called with n
+// ## ##    240  These are mostly all modifier keys. They are handled elsewhere, but still called with n
     {n,KEY_ESC      },{n,0            },{n,0            },{n,0            },    // 240   241   242   243
     {n,0            },{n,0            },{n,0            },{n,0            },    // 244   245   246   247
     {n,0            },{n,0            },{n,0            },{n,0            },    // 248   249   250   251
@@ -435,22 +435,10 @@ void dump_fifo(void){
   int accept_len = longest*chord_accept_numer/chord_accept_denom;
   for(i=0; i<=fifo_index; i++){
     if(fifo[i][1] > accept_len){// YES! SEND IT
-      send(fifo[i][0]);//// ACTUALLY SEND THE DAMNED KEYPRESS
-      //usb_keyboard_press(KEY_1,2);
-      //usb_keyboard_press(KEY_1,2);
-      //usb_keyboard_press(KEY_1,2);
-    }//else{  /// NOT ENOUGH SENDAGE
-    //  usb_keyboard_press(KEY_SPACE,0);
-    //  usb_keyboard_press(KEY_SPACE,0);
-    //  usb_keyboard_press(KEY_SPACE,0);
-    //}
-    //for(int j =0; j<fifo[i][1]/10;j++)  /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
-    //  usb_keyboard_press(KEY_COMMA,0);      /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
-    //usb_keyboard_press(KEY_C,1);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
+      send(fifo[i][0]);
+    }
     fifo[i][1]=0;
   }
-    //usb_keyboard_press(KEY_C,1);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
-    //usb_keyboard_press(KEY_C,1);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
   longest = min_press_detect*2;
   pressed = 0;
   fifo_index = 0;
@@ -458,12 +446,25 @@ void dump_fifo(void){
   // send_id is the id of the chord we're gonna send.
 void send(int send_id){
   if(send_id>240&&send_id!=255){ // If it's a modifier chord
-    modpress(send_id);
+    if(debug_mode){
+      usb_keyboard_press(KEY_M,2);
+      usb_keyboard_press(KEY_O,2);
+      usb_keyboard_press(KEY_D,2);
+    }else{ // Don't send modifier in debug mode. It does things. Bad things.
+      modpress(send_id);
+    }
   }else if(send_id == 165){// 165 is #.#. .#.# and the clear mod key.
+    if(debug_mode){
+      usb_keyboard_press(KEY_N,2);
+      usb_keyboard_press(KEY_O,2);
+      usb_keyboard_press(KEY_M,2);
+      usb_keyboard_press(KEY_O,2);
+      usb_keyboard_press(KEY_D,2);
+    }
     modlocks =  0;
     modkeys = 0;
   }else{
-    usb_keyboard_press(key_map[send_id][1], 0);//modkeys|modlocks);//////////////////////////FIX THIS
+    usb_keyboard_press(key_map[send_id][1], modkeys|modlocks);
     modkeys = 0;
   }
 }
