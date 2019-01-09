@@ -45,7 +45,7 @@ void arrow(void);
 void page(void);
 
 typedef void (*func)(void);
-func keymap_func[5] = {zero, empty, normal, meta, arrow, page};
+func keymap_func[6] = {zero, empty, normal, meta, arrow, page};
 #define z 0
 #define e 1
 #define n 2
@@ -177,6 +177,7 @@ void keyup(void);
 void keysend(void);
 
 void dump_fifo(void);
+void clear_fifo(void);
 void debug_dump(void);
 void realtime(void);
 void keyhold(void);
@@ -292,8 +293,9 @@ void normal(void){
       if(fifo[fifo_index][1] > keydown_delay){
         keyhold();
       }else{
-        if(++fifo[fifo_index][1] > longest)
+        if(++fifo[fifo_index][1] > longest){
           longest = fifo[fifo_index][1];
+        }
       }
     }else{
       fifo_index++;
@@ -443,8 +445,16 @@ void dump_fifo(void){
   pressed = 0;
   fifo_index = 0;
 }
-  // send_id is the id of the chord we're gonna send.
+void clear_fifo(void){
+  for(i=0; i<=fifo_index; i++){
+    fifo[i][1]=0;
+  }
+  longest = min_press_detect*2;
+  pressed = 0;
+  fifo_index = 0;
+}
 void send(int send_id){
+  // send_id is the id of the chord we're gonna send.
   if(send_id>240&&send_id!=255){ // If it's a modifier chord
     if(debug_mode){
       usb_keyboard_press(KEY_M,2);
@@ -474,16 +484,49 @@ void modpress(uint8_t modchord){
   modkeys |= mod;
 }
 void realtime(void){
+  clear_fifo();
+  prev_chord_id = chord_id;// I'm in the middle of writing this. REFER TO THE DIAGRAMS!!!
+  mask = 8;
+  for(i=0;i<4;i++){
+    if(chord_id & mask){
+      keyboard_keys[i] = realtime_map[realtime_index][i];
+    }
+    mask >>= 1;
+  }
+  usb_keyboard_send();
+  while(1){
+    read();
+    if(chord_id & 0xF0){
+      if(chord_id != prev_chord_id){
+        mask = 8;
+        for(i=0;i<4;i++){
+          if(chord_id & mask){
+             keyboard_keys[i] = realtime_map[realtime_index][i];
+          }else{
+             keyboard_keys[i] = 0;
+          }
+          mask >>= 1;
+        }
+      }
+      usb_keyboard_send();
+      prev_chord_id = chord_id;
+    }else{
+      break;
+    }
+  }
+  for(i=0;i<4;i++){
+    keyboard_keys[i] = 0;
+  }
+  usb_keyboard_send();
 }
-//    dump_fifo();
-//    prev_chord_id = chord_id;
-//    mask = 8;
-//    for(i=0;i<4;i++){
-//      if(chord_id & mask)
-//        keyboard_keys[0] = realtime_map[realtime_index][i];
-//        usb_keyboard_send();
-//    }
-//  }
 
 void keyhold(void){
+  clear_fifo();
+  keyboard_keys[0] = key_map[chord_id][1];
+  usb_keyboard_send();
+  while(chord_id){
+    read();
+  }
+  keyboard_keys[0] = 0;
+  usb_keyboard_send();
 }
