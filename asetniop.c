@@ -184,25 +184,23 @@ void keyhold(void);
 void modpress(uint8_t modchord);
 void send(int send_id);
 
-long i;
 uint8_t d, prev_d, mask, chord_id, prev_chord_id, pressed, modifier_pressed,timer;
-#define timeout 5000
-#define timebetween 100
 uint8_t chord_keys[8];//={0,0,0,0,0,0,0,0};
 
 uint8_t fifo_index;
 uint16_t fifo[64][2];
 uint16_t longest;
 int chord_accept_numer = 1;
-int chord_accept_denom = 3;
+int chord_accept_denom = 2;
 
 int debug_mode = 0;
 
 uint8_t modkeys;
 uint8_t modlocks;
 
-#define keydown_delay  1500
+#define keydown_delay  3000
 #define min_press_detect  0
+#define debounce_delay 300
 
 int main(void)
 {
@@ -371,7 +369,7 @@ void page(void){
 void read(void){
   // read all port D pins
   d = PIND;
-  i=0;
+  int i=0;
   while(1){// debouncing loop
     prev_d = d;
     d = PIND;
@@ -379,12 +377,12 @@ void read(void){
       i++;
     else
       i=0;
-    if(i==100)
+    if(i==debounce_delay)
       break;
   } 
   chord_id = ~d;
   mask = 1;// sweepy sweepy sweep my byte!
-  for (i=0; i<8; i++) {
+  for (int i=0; i<8; i++) {
     if ((d & mask) == 0)  {
               chord_keys[i] = 1;
           }
@@ -409,13 +407,13 @@ void debug_dump(void){
   usb_keyboard_press(KEY_3,0);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
   usb_keyboard_press(KEY_SPACE,0);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
   int accept_len = longest*chord_accept_numer/chord_accept_denom;
-  for(i=0; i<=accept_len/20; i++)
+  for(int i=0; i<=accept_len/20; i++)
     usb_keyboard_press(KEY_EQUAL,0);      /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
-  for(i=0; i<=(longest-accept_len)/20; i++)
+  for(int i=0; i<=(longest-accept_len)/20; i++)
     usb_keyboard_press(KEY_MINUS,0);      /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
   usb_keyboard_press(KEY_C,1);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
   usb_keyboard_press(KEY_ENTER,0);            /////////// DEBUGING TOOL, PRINT BASED ON HOW MUCH IT"S PRESSED
-  for(i=0; i<=fifo_index; i++){
+  for(int i=0; i<=fifo_index; i++){
     if(fifo[i][1] > accept_len){// YES! SEND IT
       usb_keyboard_press(KEY_1,2);
       usb_keyboard_press(KEY_1,2);
@@ -435,7 +433,7 @@ void debug_dump(void){
 }
 void dump_fifo(void){
   int accept_len = longest*chord_accept_numer/chord_accept_denom;
-  for(i=0; i<=fifo_index; i++){
+  for(int i=0; i<=fifo_index; i++){
     if(fifo[i][1] > accept_len){// YES! SEND IT
       send(fifo[i][0]);
     }
@@ -446,7 +444,7 @@ void dump_fifo(void){
   fifo_index = 0;
 }
 void clear_fifo(void){
-  for(i=0; i<=fifo_index; i++){
+  for(int i=0; i<=fifo_index; i++){
     fifo[i][1]=0;
   }
   longest = min_press_detect*2;
@@ -484,10 +482,16 @@ void modpress(uint8_t modchord){
   modkeys |= mod;
 }
 void realtime(void){
+  for(int i=0;i<500;i++){
+    prev_chord_id = chord_id;
+    read();
+    if(chord_id != prev_chord_id)
+      return;
+  }
   clear_fifo();
   prev_chord_id = chord_id;// I'm in the middle of writing this. REFER TO THE DIAGRAMS!!!
   mask = 8;
-  for(i=0;i<4;i++){
+  for(int i=0;i<4;i++){
     if(chord_id & mask){
       keyboard_keys[i] = realtime_map[realtime_index][i];
     }
@@ -499,7 +503,7 @@ void realtime(void){
     if(chord_id & 0xF0){
       if(chord_id != prev_chord_id){
         mask = 8;
-        for(i=0;i<4;i++){
+        for(int i=0;i<4;i++){
           if(chord_id & mask){
              keyboard_keys[i] = realtime_map[realtime_index][i];
           }else{
@@ -514,7 +518,7 @@ void realtime(void){
       break;
     }
   }
-  for(i=0;i<4;i++){
+  for(int i=0;i<4;i++){
     keyboard_keys[i] = 0;
   }
   usb_keyboard_send();
