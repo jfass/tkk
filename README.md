@@ -88,13 +88,13 @@ Of the rest of the keys, some of them may be in the original asetniop, and other
     
 ## Random nonsense
 
- [x] Chord started before previous chord released separation. Now you can press ..#. ...., ..## ...., ..#. ... for "ere". Play around with it.
- [ ] multibackspace: undo as many keypresses as were sent on the last chord release, for example if you type "ere" when you meant "r" backspace 3 times is useful.
- [ ] Improved circuit design to use 3 rather than 5 wires to the keys. Then chinsy audio cables could be used!
- [ ] abandon wired and write this on a bluetooth platform
- [ ] macro functionality.
- [ ] saving & dumping macros.
- [ ] some kinda ml for separating chords, cause I type "ere" a lot, but not "sds" so much.
+ - [x] Chord started before previous chord released separation. Now you can press ..#. ...., ..## ...., ..#. ... for "ere". Play around with it.
+ - [ ] multibackspace: undo as many keypresses as were sent on the last chord release, for example if you type "ere" when you meant "r" backspace 3 times is useful.
+ - [ ] Improved circuit design to use 3 rather than 5 wires to the keys. Then chinsy audio cables could be used!
+ - [ ] abandon wired and write this on a bluetooth platform
+ - [ ] macro functionality.
+ - [ ] saving & dumping macros.
+ - [ ] some kinda ml for separating chords, cause I type "ere" a lot, but not "sds" so much.
 
 blah blah blah
 
