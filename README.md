@@ -88,7 +88,15 @@ Of the rest of the keys, some of them may be in the original asetniop, and other
     
 ## Random nonsense
 
-The next thing on my todo list with this project is adding functionality for seperating chords when the typist accidentally starts a second chord before fully releasing the first.
+ [x] Chord started before previous chord released separation. Now you can press ..#. ...., ..## ...., ..#. ... for "ere". Play around with it.
+ [ ] multibackspace: undo as many keypresses as were sent on the last chord release, for example if you type "ere" when you meant "r" backspace 3 times is useful.
+ [ ] Improved circuit design to use 3 rather than 5 wires to the keys. Then chinsy audio cables could be used!
+ [ ] abandon wired and write this on a bluetooth platform
+ [ ] macro functionality.
+ [ ] saving & dumping macros.
+ [ ] some kinda ml for separating chords, cause I type "ere" a lot, but not "sds" so much.
+
+blah blah blah
 
 I'd like to add the rest of the keys on a standard keyboard, and maybe some special function keys, but I'm not sure when I'll get around to it.
 
