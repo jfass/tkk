@@ -34,7 +34,7 @@ Otherwise you'll have to flash the firmware some other way. Message me if you do
 
 ## Typing guide
 
-If you want to start learning about typing with this style of chorded keyboard, you can use the asetniop [keyboard tutorial](http://asetniop.com/keyboardTutorial.html) and [keyboard racer](http://asetniop.com/keyboardRacer.html) to start learning asetniop in your web browser using your qwerty keyboard. This way you can find out what its like to type with a chorded keyboard without needing to do anything radical like building a keyboard.
+If you want to start learning about typing with this style of chorded keyboard, you can use the asetniop [online demo](http://asetniop.com/try/tablet/) to start learning asetniop in your web browser using your qwerty keyboard. This way you can find out what its like to type with a chorded keyboard without needing to do anything radical like building a keyboard.
 
 There are a number of additions to the asetniop chords to expand this project into a more general keyboard. Also my keyboard only has eight keys, so doesn't use the thumbs at all. I'll explain below.
 
