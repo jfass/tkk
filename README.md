@@ -1,16 +1,15 @@
-# asetniop-keyboard
+# ten key keyboard
 
-This is my chorded keyboard project. If you don't already know, a chorded keyboard is a keyboard that makes use of combinations of keys pressed at the same time (a chords) rather than individual keypresses for typing. (It could be said that qwerty is chorded: Using chords like 'shift'+'A' for a capital 'A' or 'ctrl'+'V' for commonly found paste functions, but this misses the heart of the thing.)
+This is my ten key keyboard. I want to type and mouse anywhere, on any surface, and this seems like a necessary step. After I came up with the layout, someone pointed me towards the [asetniop](http://asetniop.com) layout, but by then this was stuck in my head. In any event, this is my first attempt at building my own keyboard, and I have absolutely no idea what I'm doing. This is based on TristanTrim's [asetniop-keyboard](https://github.com/TristanTrim/asetniop-keyboard), but obviously with two more keys.
 
-![keyboard detail](../master/images/keyboard-1.jpg)
 
-It works pretty good for the hacky experiment it is, and is rather comfortable to type on. I'm still not up to my qwerty typing speed, but it took me a long time to develop that, so I'm estimating that the time to develop typing speed on qwerty vs asetniop are about the same. Asetniop may have the difference that it will force you to touch type right away, which could be seen as good or bad.
+![Layout](layout.jpg) ... the bottom row are the physical keys. But, hold any key and it activates the virtual row corresponding to the greek letter in blue; tap any key while still holding, and you get the corresponding key on the virtual row. So, tapping the 't' key gives you a 't'. But holding the 't' key activates the gamma row, so if you then tap your left pinky (the physical 'a' key) you get a minus ('-') character. No idea whether this will allow graceful typing; gotta build it first!
 
-You can watch a short typing demo [here](https://youtu.be/0AZoeCmnyow).
+![Wiring](wiring.png) ... with a Teensy 2.0.
 
-Inspired by [asetniop](http://asetniop.com/) and built using [teensy](http://www.pjrc.com/teensy/usb_keyboard.html).
 
-![keyboard detail](../master/images/keyboard-2.jpg)
+... need to edit below here ...
+
 
 ## Installation
 Keys are wired up directly to the pins D0 - D7. There are ways to do this that would save pins, but I like this method because it's easy, and I don't need the extra pins for anything.
